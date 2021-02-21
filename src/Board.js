@@ -1,7 +1,10 @@
 import React from 'react';
 import './Board.css';
 import { Square } from './Square.js';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import io from 'socket.io-client';
+
+const socket = io(); // Connects to socket connection
 
 const styles = {
     width: '200px',
@@ -12,7 +15,6 @@ export function Board() {
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXisNext] = useState(true);
     const winner = calculateWinner(board);
-        
     function handleClick(i){
     	const boardCopy = [...board];
     	// If user click an occupied square or if game is won, return
@@ -21,6 +23,7 @@ export function Board() {
     	boardCopy[i] = xIsNext ? "X" : "O";
     	setBoard(boardCopy);
     	setXisNext(!xIsNext);
+    	socket.emit('board', {board: boardCopy, xIsNext:board});
     }
     
     function calculateWinner(board) {
@@ -42,13 +45,22 @@ export function Board() {
     		}
     	}
     	return null;
-    }
+    }   
     
-    // function renderMoves(){
-    //     <button onClick={() => setBoard(Array(9).fill(null))} >
-    //         Start Game
-    //     </button>
-    // }
+      useEffect(() => {
+        // Listening for a chat event emitted by the server. If received, we
+        // run the code in the function that is passed in as the second arg
+        socket.on('board', (data) => {
+          console.log('Board event received!');
+          console.log(data);
+          // If the server sends a message (on behalf of another client), then we
+          // add it to the list of messages to render it on the UI.
+        //   setXisNext(!xIsNext);
+          setBoard(data.board);
+        //   setBoard(prevMessages => [...prevMessages, data.board]);
+        });
+      }, []);
+
     
     return(
         <>
@@ -56,8 +68,6 @@ export function Board() {
                 <p>
                   {winner ? "Winner is Player: " + winner : "Next Player: " + (xIsNext ? "X" : "O")}
                 </p>
-                
-                
             </div>
             <div class="board">
                 {board.map((square, i) => (
