@@ -23,7 +23,7 @@ export function Board() {
     	boardCopy[i] = xIsNext ? "X" : "O";
     	setBoard(boardCopy);
     	setXisNext(!xIsNext);
-    	socket.emit('board', {board: boardCopy, xIsNext:board});
+    	socket.emit('board', {board: boardCopy, xIsNext:xIsNext});
     }
     
     function calculateWinner(board) {
@@ -55,7 +55,7 @@ export function Board() {
           console.log(data);
           // If the server sends a message (on behalf of another client), then we
           // add it to the list of messages to render it on the UI.
-        //   setXisNext(!xIsNext);
+          setXisNext(!data.xIsNext);
           setBoard(data.board);
         //   setBoard(prevMessages => [...prevMessages, data.board]);
         });
