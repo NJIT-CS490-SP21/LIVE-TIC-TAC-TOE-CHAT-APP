@@ -75,7 +75,7 @@ export function Board() {
                 ))}
             </div>
             <button onClick={() => setBoard(Array(9).fill(null))} >
-                Start Game
+                Restart Game
             </button>
         </>
     );
