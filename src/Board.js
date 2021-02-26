@@ -66,7 +66,7 @@ export function Board() {
         <>
             <div style={styles}>
                 <p>
-                  {winner ? "Winner is Player: " + winner : "Next Player: " + (xIsNext ? "X" : "O")}
+                  {winner ? "Winner is : " + winner : "Next Player: " + (xIsNext ? "X" : "O")}
                 </p>
             </div>
             <div class="board">

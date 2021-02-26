@@ -27,7 +27,7 @@ function App() {
   function onClickJoin() {
     if (joinRef.current.value != 0) {
       const username = joinRef.current.value;
-      socket.emit('join', { 'user': username });
+      socket.emit('join_room', { 'user': username });
       setlogin(() => {
         const islogg = username ? true : false;
         return islogg;  
@@ -53,25 +53,55 @@ function App() {
      socket.on('user_list', (data) => {
       console.log('User list event received!');
       console.log(data);
-      setUserList(data.users);
+      setUserList(data.user);
     });
+    
+    socket.on('join_room_announcement', function (data) {
+        console.log(data);
+        if (data.username !== "{{ username }}") {
+            const newNode = document.createElement('div');
+            newNode.innerHTML = `<b>${data.user}</b> has joined the room`;
+            document.getElementById('messages').appendChild(newNode);
+        }
+    });
+    
+    socket.on('leave_room_announcement', function (data) {
+      console.log(data);
+      if (data.username !== "{{ username }}") {
+        const newNode = document.createElement('div');
+        newNode.innerHTML =  `<b>${data.user}</b> has left the room`;
+        document.getElementById('messages').appendChild(newNode);
+      }
+    });
+    
+    window.onbeforeunload = function () {
+        socket.emit('leave_room', {
+            username: "{{ username }}",
+        })
+    };
+    
   }, []);
 
   return (
     <div>
       <div>
-        <h3>All Users (History)</h3>
-        Enter username here: <input ref={joinRef} type="text" />
+        <h3>Login to join Chat & Game</h3>
+        Enter username here: <input ref={ joinRef } type="text"/>
         <button onClick={() => {onClickJoin();}}>Join</button>
         {usersList.map((user, index) => <ListItem key={index} name={user} />)}
       </div>
-      {login ? <Board /> : null}
-      <h1>Chat Messages</h1>
-      Enter message here: <input ref={inputRef} type="text" />
-      <button onClick={onClickButton}>Send</button>
-      <ul>
-        {messages.map((item, index) => <ListItem key={index} name={item} />)}
-      </ul>
+      {login ? (
+      <>
+        <Board />
+        <h1>Chat Messages</h1>
+        Enter message here: <input ref={inputRef} type="text"/>
+        <button onClick={onClickButton}>Send</button>
+        <div id="messages">
+          {messages.map((item, index) => <ListItem key={index} name={item} />)}
+        </div>
+      </>
+      ): null}
+      
     </div>
   );
 }

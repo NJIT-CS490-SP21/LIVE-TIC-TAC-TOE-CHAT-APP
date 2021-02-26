@@ -1,6 +1,6 @@
 import os
-from flask import Flask, send_from_directory, json, session
-from flask_socketio import SocketIO
+from flask import Flask, send_from_directory, json, session, request
+from flask_socketio import SocketIO, join_room, leave_room
 from flask_cors import CORS
 
 app = Flask(__name__, static_folder='./build/static')
@@ -44,16 +44,21 @@ def on_chat(data): # data is whatever arg you pass in your emit call on client
 def on_login(data): # data is whatever arg you pass in your emit call on client
     print(str(data))
     usersList.append(data['user'])
+    print(usersList)
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('board',  data, broadcast=True, include_self=True)
+    socketio.emit('user_list',  data, broadcast=True, include_self=False)
 
-@socketio.on('join')
-def on_join(data): # data is whatever arg you pass in your emit call on client
-    print(str(data))
-    usersList.append(data['user'])
-    print(usersList)
-    socketio.emit('user_list', {'users': usersList})
+@socketio.on('join_room')
+def handle_join_room_event(data):
+    print("{} has joined the room".format(data['user']))
+    socketio.emit('join_room_announcement', data)
+    
+@socketio.on('leave_room')
+def handle_leave_room_event(data):
+    print(data)
+    print("{} has left the room.".format(data['username']))
+    socketio.emit('leave_room_announcement', data)
 
 @socketio.on('board')
 def on_board(data): # data is whatever arg you pass in your emit call on client
