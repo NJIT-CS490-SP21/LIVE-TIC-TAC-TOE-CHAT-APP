@@ -10,15 +10,30 @@ const socket = io(); // Connects to socket connection
 function App() {
   const [messages, setMessages] = useState([]); // State variable, list of messages
   const inputRef = useRef(null); // Reference to <input> element
-
+  const joinRef = useRef(null); // Reference to <input> element
+  const [usersList, setUserList] = useState([]);
+  const [login, setlogin] = useState(false);
+  
   function onClickButton() {
-    if (inputRef != null) {
+    if (inputRef.current.value != 0) {
       const message = inputRef.current.value;
       // If your own client sends a message, we add it to the list of messages to 
       // render it on the UI.
       setMessages(prevMessages => [...prevMessages, message]);
       socket.emit('chat', { message: message });
     }
+  }
+  
+  function onClickJoin() {
+    if (joinRef.current.value != 0) {
+      const username = joinRef.current.value;
+      socket.emit('join', { 'user': username });
+      setlogin(() => {
+        const islogg = username ? true : false;
+        return islogg;  
+      });
+    }
+    return login;
   }
 
   // The function inside useEffect is only run whenever any variable in the array
@@ -34,11 +49,23 @@ function App() {
       // add it to the list of messages to render it on the UI.
       setMessages(prevMessages => [...prevMessages, data.message]);
     });
+    
+     socket.on('user_list', (data) => {
+      console.log('User list event received!');
+      console.log(data);
+      setUserList(data.users);
+    });
   }, []);
 
   return (
     <div>
-      <Board />
+      <div>
+        <h3>All Users (History)</h3>
+        Enter username here: <input ref={joinRef} type="text" />
+        <button onClick={() => {onClickJoin();}}>Join</button>
+        {usersList.map((user, index) => <ListItem key={index} name={user} />)}
+      </div>
+      {login ? <Board /> : null}
       <h1>Chat Messages</h1>
       Enter message here: <input ref={inputRef} type="text" />
       <button onClick={onClickButton}>Send</button>

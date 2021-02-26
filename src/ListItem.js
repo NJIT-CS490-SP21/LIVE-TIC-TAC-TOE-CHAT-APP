@@ -1,7 +1,7 @@
 import React from 'react'
 
 export function ListItem(props) {
-    return <li>
+    return <div>
         {props.name}
-    </li>;
+    </div>;
 }
