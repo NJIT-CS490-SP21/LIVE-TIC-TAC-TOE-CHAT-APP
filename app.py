@@ -31,34 +31,47 @@ def on_disconnect():
 
 # When a client emits the event 'chat' to the server, this function is run
 # 'chat' is a custom event name that we just decided
-@socketio.on('chat')
-def on_chat(data): # data is whatever arg you pass in your emit call on client
-    print(str(data))
-    # This emits the 'chat' event from the server to all clients except for
-    # the client that emmitted the event that triggered this function
-    socketio.emit('chat',  data, broadcast=True, include_self=False)
+# @socketio.on('chat')
+# def on_chat(data): # data is whatever arg you pass in your emit call on client
+#     print(str(data))
+#     # This emits the 'chat' event from the server to all clients except for
+#     # the client that emmitted the event that triggered this function
+#     socketio.emit('chat',  data, broadcast=True, include_self=False)
+
+@socketio.on('send_message')
+def handle_send_message_event(data):
+    print("{} has sent message to the room {}: {}".format(data['username'], data['message']))
+    socketio.emit('receive_message', data)
     
-# When a client emits the event 'chat' to the server, this function is run
-# 'chat' is a custom event name that we just decided
-@socketio.on('login')
-def on_login(data): # data is whatever arg you pass in your emit call on client
-    print(str(data))
-    usersList.append(data['user'])
-    print(usersList)
-    # This emits the 'chat' event from the server to all clients except for
-    # the client that emmitted the event that triggered this function
-    socketio.emit('user_list',  data, broadcast=True, include_self=False)
+# # When a client emits the event 'chat' to the server, this function is run
+# # 'chat' is a custom event name that we just decided
+# @socketio.on('login')
+# def on_login(data): # data is whatever arg you pass in your emit call on client
+#     print(str(data))
+#     usersList.append(data['user'])
+#     print(usersList)
+#     # This emits the 'chat' event from the server to all clients except for
+#     # the client that emmitted the event that triggered this function
+#     socketio.emit('user_list',  data, broadcast=True, include_self=False)
+
 
 @socketio.on('join_room')
 def handle_join_room_event(data):
-    print("{} has joined the room".format(data['user']))
+    usersList.append(data['username'])
+    print("{} has joined the room".format(data['username']))
     socketio.emit('join_room_announcement', data)
+    # This emits the 'chat' event from the server to all clients except for
+    # the client that emmitted the event that triggered this function
+    socketio.emit('user_list',  data, broadcast=True, include_self=False)
     
 @socketio.on('leave_room')
 def handle_leave_room_event(data):
     print(data)
     print("{} has left the room.".format(data['username']))
     socketio.emit('leave_room_announcement', data)
+    
+
+    
 
 @socketio.on('board')
 def on_board(data): # data is whatever arg you pass in your emit call on client
