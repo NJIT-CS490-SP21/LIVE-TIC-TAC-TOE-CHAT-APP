@@ -10,10 +10,7 @@ const socket = io(); // Connects to socket connection
 export function App() {
   const [messages, setMessages] = useState([]); // State variable, list of messages
   const inputRef = useRef(null); // Reference to <input> element
-  const joinRef = useRef(null); // Reference to <input> element
   const [usersList, setUserList] = useState([]);
-  const [login, setlogin] = useState(false);
-  
   function onClickButton() {
     if (inputRef.current.value != 0) {
       const message = inputRef.current.value;
@@ -54,8 +51,10 @@ export function App() {
     socket.on('join_room_announcement', function (data) {
         console.log(data);
         if (data.username !== "{{ username }}") {
+            var colors = [" came to relax here", " is eating popcorn","  brought pizza for the Chat","Welcome to the Chat"," just slided in"];
+            var randomWelcomeMsg = colors[Math.floor(Math.random()*colors.length)]; //pluck a random color
             const newNode = document.createElement('div');
-            newNode.innerHTML = `<b>${data.username}</b> just slided in!!!`;
+            newNode.innerHTML = `<b>${data.username}</b> ${randomWelcomeMsg}!!!`;
             document.getElementById('messages').appendChild(newNode);
         }
     });
@@ -79,18 +78,19 @@ export function App() {
 
   return (
     <div>
-      <div class='toppane'>
-      </div>
+      <h1 class='toppane'>
+      Tic Tac Toe & Chatting APP
+      </h1>
       <div class="row">
-        <div class="column">
+        <div class="column1">
             <h1>All Users</h1>
-            {usersList.map((user, index) => <ListItem key={index} name={user} />)}
+            {usersList.map((user, index) => <ListItem key={index} name={user}/>)}
         </div>  
-        <div class="column">
+        <div class="column2">
             <h1>Tic Tac Toe Board</h1>
             <Board />
         </div>  
-        <div class="column">
+        <div class="column3">
             <h1>Chat Messages</h1>
             Enter message here: <input ref={inputRef} type="text"/>
             <button onClick={onClickButton}>Send</button>

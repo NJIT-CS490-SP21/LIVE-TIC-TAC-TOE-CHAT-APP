@@ -13,7 +13,7 @@ socketio = SocketIO(
     json=json,
     manage_session=False
 )
-# usersList = []
+usersList = []
 @app.route('/', defaults={"filename": "index.html"})
 @app.route('/<path:filename>')
 def index(filename):
@@ -55,6 +55,8 @@ def handle_join_room_event(data):
     # the client that emmitted the event that triggered this function
     socketio.emit('user_list',  data, broadcast=True, include_self=True)
     
+
+
 @socketio.on('leave_room')
 def handle_leave_room_event(data):
     print(data)
