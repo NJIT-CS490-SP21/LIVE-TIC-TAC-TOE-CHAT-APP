@@ -44,7 +44,7 @@ export function App() {
      socket.on('user_list', (data) => {
       console.log('User list event received!');
       console.log(data);
-      setUserList(prevUser => [...prevUser, data.username]);
+      setUserList(data);
       console.log(usersList);
     });
     
@@ -84,7 +84,9 @@ export function App() {
       <div class="row">
         <div class="column1">
             <h1>All Users</h1>
-            {usersList.map((user, index) => <ListItem key={index} name={user}/>)}
+            <div class="column1">
+            {usersList.map((user, index) => (<><b><ListItem key={index} name={user}/></b></>))}
+            </div>
         </div>  
         <div class="column2">
             <h1>Tic Tac Toe Board</h1>
@@ -94,7 +96,7 @@ export function App() {
             <h1>Chat Messages</h1>
             Enter message here: <input ref={inputRef} type="text"/>
             <button onClick={onClickButton}>Send</button>
-            <div id="messages">
+            <div class="column3"  id="messages">
               {messages.map((item, index) => <ListItem key={index} name={item} />)}
             </div>
         </div>

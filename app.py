@@ -14,6 +14,7 @@ socketio = SocketIO(
     manage_session=False
 )
 usersList = []
+users = {}
 @app.route('/', defaults={"filename": "index.html"})
 @app.route('/<path:filename>')
 def index(filename):
@@ -53,6 +54,10 @@ def handle_join_room_event(data):
     socketio.emit('join_room_announcement', data, broadcast=True, include_self=False)
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
+    users['username'] = usersList
+    print(users['username'])
+    data = users['username'] 
+    print(data)
     socketio.emit('user_list',  data, broadcast=True, include_self=True)
     
 

@@ -29,7 +29,7 @@ export function Login() {
         <form onSubmit={handleSubmit}>
             <div>
                 <label>Enter your username:</label>
-                <input id="join_room" placeholder="Enter Username!" name="username"></input><button type="submit">Join</button>
+                <input id="join_room" placeholder="Username" name="username"></input><button type="submit">Join</button>
             </div>
         </form>
     </div>
