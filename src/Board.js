@@ -15,6 +15,7 @@ export function Board() {
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXisNext] = useState(true);
     const winner = calculateWinner(board);
+    
     function handleClick(i){
     	const boardCopy = [...board];
     	// If user click an occupied square or if game is won, return
@@ -24,6 +25,13 @@ export function Board() {
     	setBoard(boardCopy);
     	setXisNext(!xIsNext);
     	socket.emit('board', {board: boardCopy, xIsNext:xIsNext});
+    }
+    
+    function resartBoard(){
+        var board = Array(9).fill(null);
+        console.log('boardCopy');
+        console.log(board);
+        socket.emit('board', {board: board});
     }
     
     function calculateWinner(board) {
@@ -57,7 +65,6 @@ export function Board() {
           // add it to the list of messages to render it on the UI.
           setXisNext(!data.xIsNext);
           setBoard(data.board);
-        //   setBoard(prevMessages => [...prevMessages, data.board]);
         });
       }, []);
 
@@ -74,10 +81,9 @@ export function Board() {
                   <Square class="box" key={i} value={square} onClick={() => handleClick(i)} />
                 ))}
             </div>
-            <button onClick={() => setBoard(Array(9).fill(null))} >
+            <button onClick={resartBoard} >
                 Restart Game
             </button>
         </>
     );
 }
-

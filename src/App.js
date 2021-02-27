@@ -47,7 +47,8 @@ export function App() {
      socket.on('user_list', (data) => {
       console.log('User list event received!');
       console.log(data);
-      setUserList(data.username);
+      setUserList(prevUser => [...prevUser, data.username]);
+      console.log(usersList);
     });
     
     socket.on('join_room_announcement', function (data) {
@@ -82,8 +83,11 @@ export function App() {
       </div>
       <div class="row">
         <div class="column">
+            <h1>All Users</h1>
+            {usersList.map((user, index) => <ListItem key={index} name={user} />)}
         </div>  
         <div class="column">
+            <h1>Tic Tac Toe Board</h1>
             <Board />
         </div>  
         <div class="column">
