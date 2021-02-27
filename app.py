@@ -45,16 +45,6 @@ def handle_send_message_event(data):
     
 # # When a client emits the event 'chat' to the server, this function is run
 # # 'chat' is a custom event name that we just decided
-# @socketio.on('login')
-# def on_login(data): # data is whatever arg you pass in your emit call on client
-#     print(str(data))
-#     usersList.append(data['user'])
-#     print(usersList)
-#     # This emits the 'chat' event from the server to all clients except for
-#     # the client that emmitted the event that triggered this function
-#     socketio.emit('user_list',  data, broadcast=True, include_self=False)
-
-
 @socketio.on('join_room')
 def handle_join_room_event(data):
     usersList.append(data['username'])
