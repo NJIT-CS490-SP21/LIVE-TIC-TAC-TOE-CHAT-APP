@@ -86,7 +86,7 @@ export function Board(props) {
         <>
             <div style={styles}>
                 <h3>
-                  {winner ? "Winner is : " + winner : "Next Player: " + (xIsNext ? "X" : "O")}
+                  {winner ? "Winner is : " + (winner ? X_player+"(X)" : O_player+"(O)"): "Next turn: " +(xIsNext ? X_player : O_player)+" ("+(xIsNext ? "X" : "O")+")"}
                 </h3>
             </div>
             <div class="board">

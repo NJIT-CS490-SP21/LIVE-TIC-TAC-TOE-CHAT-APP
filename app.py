@@ -67,13 +67,12 @@ def handle_send_message_event(data):
 @socketio.on('join_room')
 def handle_join_room_event(data):
     #adding new joined user to the db
-    new_user = models.Person(username=data['username'], score=100)
-    print(new_user)
     all_people = models.Person.query.all()
     users = []
     for person in all_people:
         users.append(person.username)
     if data['username'] not in users:
+        new_user = models.Person(username=data['username'], score=100)
         db.session.add(new_user)
         db.session.commit()
         users.append(data['username'])
@@ -92,7 +91,7 @@ def handle_join_room_event(data):
     print(data)
     print('Active User List Python: ', activeUsersList)
     socketio.emit('active_user_list', data, broadcast=True, include_self=True)
-    return None
+    return
 
 @socketio.on('leave_room')
 def handle_leave_room_event(data):
