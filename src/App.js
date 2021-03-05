@@ -11,14 +11,24 @@ export function App() {
   const [messages, setMessages] = useState([]); // State variable, list of messages
   const inputRef = useRef(null); // Reference to <input> element
   const [usersList, setUserList] = useState([]);
+  const [activeUsersList, setActiveUserList] = useState([]);
+  const [isShown, setShown] = useState(false);
+  
   function onClickButton() {
-    if (inputRef.current.value != 0) {
+    if (inputRef.current.value !== 0) {
       const message = inputRef.current.value;
       // If your own client sends a message, we add it to the list of messages to 
       // render it on the UI.
       setMessages(prevMessages => [...prevMessages, message]);
       socket.emit('chat', { message: message });
     }
+  }
+  
+  function leadboard() {
+    // setShown(!isShown);
+    setShown((prevShown) => {
+      return !prevShown;
+    });
   }
   
   // The function inside useEffect is only run whenever any variable in the array
@@ -44,8 +54,15 @@ export function App() {
      socket.on('user_list', (data) => {
       console.log('User list event received!');
       console.log(data);
-      setUserList(data);
-      console.log(usersList);
+      setUserList(data.users);
+      console.log(usersList); 
+    });
+    
+    socket.on('active_user_list', (data) => {
+      console.log('Active user list event received!');
+      console.log(data);
+      setActiveUserList(data);
+      console.log(activeUsersList); 
     });
     
     socket.on('join_room_announcement', function (data) {
@@ -57,6 +74,7 @@ export function App() {
             newNode.innerHTML = `<b>${data.username}</b> ${randomWelcomeMsg}!!!`;
             document.getElementById('messages').appendChild(newNode);
         }
+        
     });
     
     socket.on('leave_room_announcement', function (data) {
@@ -81,11 +99,34 @@ export function App() {
       <h1 class='toppane'>
       Tic Tac Toe & Chatting APP
       </h1>
+      <div>
+        <button onClick={() => leadboard()}>Leadboard!</button>
+        { isShown === true ? (
+          <>
+          <div>
+          <table>
+            <tr>
+              <th>Username</th>
+              <th>Score</th>
+            </tr>
+            {usersList.map((user, index) => (
+              
+              <tr>
+                <td>{user}</td>
+                <td>{index}</td>
+              </tr>
+              
+              )
+            )}
+          </table>
+          </div>
+          </> ) : null}
+      </div>
       <div class="row">
         <div class="column1">
             <h1>All Users</h1>
             <div class="column1">
-            {usersList.map((user, index) => (<><b><ListItem key={index} name={user}/></b></>))}
+            {activeUsersList.map((user, index) => (<><b><ListItem key={index} name={user}/></b></>))}
             </div>
         </div>  
         <div class="column2">
@@ -104,4 +145,3 @@ export function App() {
     </div>
   );
 }
-

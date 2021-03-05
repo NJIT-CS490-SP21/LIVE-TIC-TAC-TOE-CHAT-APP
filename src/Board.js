@@ -15,6 +15,7 @@ export function Board() {
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXisNext] = useState(true);
     const winner = calculateWinner(board);
+    const [usersList, setUserList] = useState({"X": "", "Y":"", "Spectators":[]});
     
     function handleClick(i){
     	const boardCopy = [...board];
@@ -66,6 +67,21 @@ export function Board() {
           setXisNext(!data.xIsNext);
           setBoard(data.board);
         });
+        
+        socket.on('gettingXO', (data) => {
+          console.log('gettingXO event received!');
+          console.log(data);
+          if (usersList.X == ""){
+            setUserList(usersList.X = data[0]);    
+          }
+          else if (usersList.O == ""){
+            setUserList(usersList.Y = data[1]);    
+          }
+          else {
+             setUserList(usersList.S = data.slice(2));
+          }
+          console.log(data);
+        });
       }, []);
 
     
@@ -78,7 +94,7 @@ export function Board() {
             </div>
             <div class="board">
                 {board.map((square, i) => (
-                  <Square class="box" key={i} value={square} onClick={() => handleClick(i)} />
+                  <Square class="box" key={i} value={square} onClick={() => { (handleClick(i): null)}} />
                 ))}
             </div>
             <button onClick={resartBoard} >
