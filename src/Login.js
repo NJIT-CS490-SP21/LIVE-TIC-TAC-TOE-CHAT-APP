@@ -8,21 +8,19 @@ import io from 'socket.io-client';
 
 const socket = io(); // Connects to socket connection
 
-function HandleSubmit(event) {
+export function Login() {
+  // body...
+  
+  function HandleSubmit(event) {
     let userName = document.getElementById("join_room");
     // TODO- send the address on. a socket to the server
     socket.emit('join_room', {'username': userName.value});
-    
-    
     console.log('Sent the address ' + userName.value + ' to server!');
+    ReactDOM.render(<App user={userName.value}/>, document.getElementById('root'));
     userName.value = ''
-    ReactDOM.render(<App /> , document.getElementById('root'));
     event.preventDefault();
-}
-
-export function Login() {
-  // body...
-  const loginRef = useRef(null); // Reference to <input> element
+    }
+    
   return(
     <>
     <div class='toppane'>
@@ -30,7 +28,7 @@ export function Login() {
         <form onSubmit={HandleSubmit}>
             <div>
                 <label>Enter your username:</label>
-                <input ref={loginRef} id="join_room" placeholder="Username" name="username"></input><button type="submit">Join</button>
+                <input id="join_room" placeholder="Username" name="username"></input><button type="submit">Join</button>
             </div>
         </form>
     </div>

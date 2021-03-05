@@ -11,11 +11,15 @@ const styles = {
     margin: '10 px auto',
 };
 
-export function Board() {
+export function Board(props) {
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXisNext] = useState(true);
     const winner = calculateWinner(board);
-    const [usersList, setUserList] = useState({"X": "", "Y":"", "Spectators":[]});
+    const usersList = props.activeList;
+    const user = props.user;
+    console.log('User name is received in Board: ', user)
+    const X_player = usersList[0];
+    const O_player = usersList[1];
     
     function handleClick(i){
     	const boardCopy = [...board];
@@ -66,21 +70,6 @@ export function Board() {
           // add it to the list of messages to render it on the UI.
           setXisNext(!data.xIsNext);
           setBoard(data.board);
-        });
-        
-        socket.on('gettingXO', (data) => {
-          console.log('gettingXO event received!');
-          console.log(data);
-          if (usersList.X == ""){
-            setUserList(usersList.X = data[0]);    
-          }
-          else if (usersList.O == ""){
-            setUserList(usersList.Y = data[1]);    
-          }
-          else {
-             setUserList(usersList.S = data.slice(2));
-          }
-          console.log(data);
         });
       }, []);
 

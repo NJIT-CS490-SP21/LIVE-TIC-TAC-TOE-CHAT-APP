@@ -77,6 +77,7 @@ def handle_join_room_event(data):
         db.session.add(new_user)
         db.session.commit()
         users.append(data['username'])
+        db.session.close()
     print(users)
     socketio.emit('user_list', {'users': [users]})
     #adding new joined user to the active list and broadcasting join msg
@@ -90,10 +91,8 @@ def handle_join_room_event(data):
     data = activeUsers['username']
     print(data)
     print('Active User List Python: ', activeUsersList)
-    socketio.emit('gettingXO', activeUsersList)
     socketio.emit('active_user_list', data, broadcast=True, include_self=True)
     return None
-    
 
 @socketio.on('leave_room')
 def handle_leave_room_event(data):

@@ -7,13 +7,15 @@ import io from 'socket.io-client';
 
 const socket = io(); // Connects to socket connection
 
-export function App() {
+export function App(props) {
   const [messages, setMessages] = useState([]); // State variable, list of messages
   const inputRef = useRef(null); // Reference to <input> element
+  const activeLoggedUser = props.user;
+  console.log('User name is received in APP: ', activeLoggedUser)
   const [usersList, setUserList] = useState([]);
   const [activeUsersList, setActiveUserList] = useState([]);
   const [isShown, setShown] = useState(false);
-  
+  const activeWindowName = useRef(null);
   function onClickButton() {
     if (inputRef.current.value !== 0) {
       const message = inputRef.current.value;
@@ -74,7 +76,6 @@ export function App() {
             newNode.innerHTML = `<b>${data.username}</b> ${randomWelcomeMsg}!!!`;
             document.getElementById('messages').appendChild(newNode);
         }
-        
     });
     
     socket.on('leave_room_announcement', function (data) {
@@ -99,6 +100,9 @@ export function App() {
       <h1 class='toppane'>
       Tic Tac Toe & Chatting APP
       </h1>
+      <h2>
+        Username: {activeLoggedUser}
+      </h2>
       <div>
         <button onClick={() => leadboard()}>Leadboard!</button>
         { isShown === true ? (
@@ -110,28 +114,28 @@ export function App() {
               <th>Score</th>
             </tr>
             {usersList.map((user, index) => (
-              
               <tr>
                 <td>{user}</td>
                 <td>{index}</td>
               </tr>
-              
               )
             )}
           </table>
           </div>
-          </> ) : null}
+          </> 
+          ) : null}
       </div>
       <div class="row">
         <div class="column1">
             <h1>All Users</h1>
             <div class="column1">
-            {activeUsersList.map((user, index) => (<><b><ListItem key={index} name={user}/></b></>))}
+            {activeUsersList.map((user, index) => (<><b><ListItem key={index} name={user}/></b></>)
+            )}
             </div>
         </div>  
         <div class="column2">
             <h1>Tic Tac Toe Board</h1>
-            <Board />
+            <Board user={activeLoggedUser} activeList={activeUsersList}/>
         </div>  
         <div class="column3">
             <h1>Chat Messages</h1>
