@@ -12,16 +12,15 @@ export function Login() {
   // body...
   
   function HandleSubmit(event) {
-    if (document.getElementById("join_room").value !== null){
-      let userName = document.getElementById("join_room");
-      // TODO- send the address on. a socket to the server
-      socket.emit('join_room', {'username': userName.value});
-      console.log('Sent the address ' + userName.value + ' to server!');
-      ReactDOM.render(<App user={userName.value}/>, document.getElementById('root'));
-      userName.value = ''
-      event.preventDefault();
-    }
-    }
+    
+    let userName = document.getElementById("join_room");
+    // TODO- send the address on. a socket to the server
+    socket.emit('join_room', {'username': userName.value});
+    console.log('Sent the address ' + userName.value + ' to server!');
+    ReactDOM.render(<App user={userName.value}/>, document.getElementById('root'));
+    userName.value = ''
+    event.preventDefault();
+  }
     
   return(
     <>

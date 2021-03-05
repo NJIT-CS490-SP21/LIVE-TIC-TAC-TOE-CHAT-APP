@@ -81,15 +81,17 @@ export function App(props) {
     socket.on('leave_room_announcement', function (data) {
       console.log(data);
       if (data.username !== "{{ username }}") {
+        var colors = [" sad to see you goooo!!!", " has abandoned us.","  left us"," got bored and left us"," has to finish homework...abandoned us!"];
+        var randomLeftMsg = colors[Math.floor(Math.random()*colors.length)]; //pluck a random color
         const newNode = document.createElement('div');
-        newNode.innerHTML =  `<b>${data.username}</b> has left the room`;
+        newNode.innerHTML = `<b>${data.username}</b> ${randomLeftMsg}!!!`;
         document.getElementById('messages').appendChild(newNode);
       }
     });
     
     window.onbeforeunload = function () {
         socket.emit('leave_room', {
-            username: "{{ username }}",
+            username: activeLoggedUser,
         });
     };
     

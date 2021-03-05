@@ -17,7 +17,6 @@ export function Board(props) {
     const winner = calculateWinner(board);
     const usersList = props.activeList;
     const user = props.user;
-    console.log('User name is received in Board: ', user)
     const X_player = usersList[0];
     const O_player = usersList[1];
     

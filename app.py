@@ -99,6 +99,13 @@ def handle_leave_room_event(data):
     print(data)
     print("{} has left the room.".format(data['username']))
     socketio.emit('leave_room_announcement', data, broadcast=True, include_self=False)
+    activeUsersList.remove(data['username'])
+    activeUsers['username'] = activeUsersList
+    print(activeUsers['username'])
+    data = activeUsers['username']
+    print(data)
+    print('Updated Active User List Python: ', activeUsersList) 
+    socketio.emit('active_user_list', data, broadcast=True, include_self=True)
 
 @socketio.on('board')
 def on_board(data): # data is whatever arg you pass in your emit call on client
