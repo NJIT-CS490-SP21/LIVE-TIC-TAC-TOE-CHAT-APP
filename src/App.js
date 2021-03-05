@@ -21,8 +21,8 @@ export function App(props) {
       const message = inputRef.current.value;
       // If your own client sends a message, we add it to the list of messages to 
       // render it on the UI.
-      setMessages(prevMessages => [...prevMessages, message]);
-      socket.emit('chat', { message: message });
+      setMessages(prevMessages => [...prevMessages, activeLoggedUser+': '+message]);
+      socket.emit('chat', { message: activeLoggedUser+': '+ message });
     }
   }
   

@@ -22,14 +22,23 @@ export function Board(props) {
     const O_player = usersList[1];
     
     function handleClick(i){
-    	const boardCopy = [...board];
+        const boardCopy = [...board];
     	// If user click an occupied square or if game is won, return
     	if ( winner || boardCopy[i] ) return;
-    	// Put an X or an O in the clicked square
-    	boardCopy[i] = xIsNext ? "X" : "O";
-    	setBoard(boardCopy);
-    	setXisNext(!xIsNext);
-    	socket.emit('board', {board: boardCopy, xIsNext:xIsNext});
+        if (user === X_player && xIsNext === true){
+        	// Put an X or an O in the clicked square
+        	boardCopy[i] = xIsNext ? "X" : "O";
+	        setBoard(boardCopy);
+    	    setXisNext(!xIsNext);    
+        	socket.emit('board', {board: boardCopy, xIsNext:xIsNext});    
+        }
+        else if(user === O_player && xIsNext === false){
+            // Put an X or an O in the clicked square
+        	boardCopy[i] = xIsNext ? "X" : "O";
+	        setBoard(boardCopy);
+    	    setXisNext(!xIsNext);    
+        	socket.emit('board', {board: boardCopy, xIsNext:xIsNext});    
+        }
     }
     
     function resartBoard(){
