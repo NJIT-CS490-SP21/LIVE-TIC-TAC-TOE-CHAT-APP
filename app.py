@@ -93,6 +93,7 @@ def handle_join_room_event(data):
     socketio.emit('active_user_list', data, broadcast=True, include_self=True)
     return
 
+#ADDED to be able to commit
 @socketio.on('leave_room')
 def handle_leave_room_event(data):
     print(data)
