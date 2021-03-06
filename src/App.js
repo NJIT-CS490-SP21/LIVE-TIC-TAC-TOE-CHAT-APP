@@ -2,6 +2,7 @@ import './App.css';
 import { ListItem } from './ListItem.js';
 import { useState, useRef, useEffect } from 'react';
 import { Board } from './Board.js';
+import { LeadBoard } from './LeadBoard.js';
 import io from 'socket.io-client';
 
 
@@ -12,7 +13,6 @@ export function App(props) {
   const inputRef = useRef(null); // Reference to <input> element
   const activeLoggedUser = props.user;
   console.log('User name is received in APP: ', activeLoggedUser)
-  const [usersList, setUserList] = useState([]);
   const [activeUsersList, setActiveUserList] = useState([]);
   const [isShown, setShown] = useState(false);
   const activeWindowName = useRef(null);
@@ -26,7 +26,7 @@ export function App(props) {
     }
   }
   
-  function leadboard() {
+  function showLeadboard() {
     // setShown(!isShown);
     setShown((prevShown) => {
       return !prevShown;
@@ -45,19 +45,6 @@ export function App(props) {
       // If the server sends a message (on behalf of another client), then we
       // add it to the list of messages to render it on the UI.
       setMessages(prevMessages => [...prevMessages, data.message]);
-    });
-    // socket.on('receive_message', function (data) {
-    //     console.log(data);
-    //     const newNode = document.createElement('div');
-    //     newNode.innerHTML = `<b>${data.username}:&nbsp;</b> ${data.message}`;
-    //     document.getElementById('messages').appendChild(newNode);
-    // });
-    
-     socket.on('user_list', (data) => {
-      console.log('User list event received!');
-      console.log(data);
-      setUserList(data.users);
-      console.log(usersList); 
     });
     
     socket.on('active_user_list', (data) => {
@@ -106,26 +93,8 @@ export function App(props) {
         Username: {activeLoggedUser}
       </h2>
       <div>
-        <button onClick={() => leadboard()}>Leadboard!</button>
-        { isShown === true ? (
-          <>
-          <div>
-          <table>
-            <tr>
-              <th>Username</th>
-              <th>Score</th>
-            </tr>
-            {usersList.map((user, index) => (
-              <tr>
-                <td>{user}</td>
-                <td>{index}</td>
-              </tr>
-              )
-            )}
-          </table>
-          </div>
-          </> 
-          ) : null}
+        <button onClick={() => showLeadboard()}>Leadboard!</button>
+        { isShown === true ? <LeadBoard /> : null}
       </div>
       <div class="row">
         <div class="column1">
