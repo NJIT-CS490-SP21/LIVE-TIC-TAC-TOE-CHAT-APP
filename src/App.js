@@ -11,6 +11,7 @@ const socket = io(); // Connects to socket connection
 export function App(props) {
   const [messages, setMessages] = useState([]); // State variable, list of messages
   const inputRef = useRef(null); // Reference to <input> element
+  const [usersList, setUserList] = useState({});
   const activeLoggedUser = props.user;
   console.log('User name is received in APP: ', activeLoggedUser)
   const [activeUsersList, setActiveUserList] = useState([]);
@@ -76,6 +77,15 @@ export function App(props) {
       }
     });
     
+        // Listening for a user_list event emitted by the server. If received, we
+    // run the code in the function that is passed in as the second arg
+    socket.on('user_list', (data) => {
+      console.log('User list event received!');
+      console.log(data);
+      setUserList(data);
+      console.log(usersList);
+    });
+    
     window.onbeforeunload = function () {
         socket.emit('leave_room', {
             username: activeLoggedUser,
@@ -94,7 +104,7 @@ export function App(props) {
       </h2>
       <div>
         <button onClick={() => showLeadboard()}>Leadboard!</button>
-        { isShown === true ? <LeadBoard /> : null}
+        { isShown === true ? <LeadBoard usersList={usersList}/> : null}
       </div>
       <div class="row">
         <div class="column1">

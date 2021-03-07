@@ -4,6 +4,8 @@ from flask_socketio import SocketIO, join_room, leave_room
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
+from collections import OrderedDict
+import operator
 
 load_dotenv(find_dotenv()) #This is to load your env Variables from .env
 
@@ -39,11 +41,13 @@ def index(filename):
 def on_connect():
     print('User connected!')
     all_people = models.Person.query.all()
-    users = []
+    users = {}
     for person in all_people:
-        users.append(person.username)
+        users[person.username] = person.score
     print(users)
-    socketio.emit('user_list', {'users': [users]})
+    users = dict(sorted(users.items(), key=operator.itemgetter(1),reverse=True))
+    print('sorted dict: ' + str(users))
+    
 
 # When a client disconnects from this Socket connection, this function is run
 @socketio.on('disconnect')
@@ -68,17 +72,22 @@ def handle_send_message_event(data):
 def handle_join_room_event(data):
     #adding new joined user to the db
     all_people = models.Person.query.all()
-    users = []
+    print('============================================================')
+    users = {}
     for person in all_people:
-        users.append(person.username)
+        users[person.username] = person.score
+    print(users)
     if data['username'] not in users:
         new_user = models.Person(username=data['username'], score=100)
         db.session.add(new_user)
         db.session.commit()
-        users.append(data['username'])
-        db.session.close()
-    print(users)
-    socketio.emit('user_list', {'users': [users]})
+        users[data['username']] = 100
+        # users.append(data['username'])
+        # db.session.close()
+    # To sort dictionary in desending order
+    users1 = dict(sorted(users.items(), key=operator.itemgetter(1),reverse=True))
+    print('sorted dict: ' + str(users1))
+    socketio.emit('user_list', users1, broadcast=True, include_self=True)
     #adding new joined user to the active list and broadcasting join msg
     activeUsersList.append(data['username'])
     print("{} has joined the room".format(data['username']))
@@ -91,9 +100,7 @@ def handle_join_room_event(data):
     print(data)
     print('Active User List Python: ', activeUsersList)
     socketio.emit('active_user_list', data, broadcast=True, include_self=True)
-    return
 
-#ADDED to be able to commit
 @socketio.on('leave_room')
 def handle_leave_room_event(data):
     print(data)
