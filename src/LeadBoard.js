@@ -8,6 +8,7 @@ const socket = io(); // Connects to socket connection
 
 export function LeadBoard(props) {
     const usersList = props.usersList;
+    const activeLoggedUser=props.user; 
     console.log(usersList)
     // useEffect(() => {
     //     // Listening for a user_list event emitted by the server. If received, we
@@ -32,8 +33,7 @@ export function LeadBoard(props) {
                   <td key={index}>{key}</td>
                   <td>{usersList[key]}</td>
                 </tr>
-                )
-                )}
+                ))}
             </table>
         </>
     );

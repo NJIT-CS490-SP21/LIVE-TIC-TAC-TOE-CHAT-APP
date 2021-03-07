@@ -104,7 +104,7 @@ export function App(props) {
       </h2>
       <div>
         <button onClick={() => showLeadboard()}>Leadboard!</button>
-        { isShown === true ? <LeadBoard usersList={usersList}/> : null}
+        { isShown === true ? <LeadBoard user={activeLoggedUser} usersList={usersList}/> : null}
       </div>
       <div class="row">
         <div class="column1">
@@ -116,7 +116,7 @@ export function App(props) {
         </div>  
         <div class="column2">
             <h1>Tic Tac Toe Board</h1>
-            <Board user={activeLoggedUser} activeList={activeUsersList}/>
+            <Board user={activeLoggedUser} activeList={activeUsersList} usersList={usersList}/>
         </div>  
         <div class="column3">
             <h1>Chat Messages</h1>

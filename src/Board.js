@@ -15,11 +15,15 @@ export function Board(props) {
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXisNext] = useState(true);
     const winner = calculateWinner(board);
+    console.log(winner);
     const usersList = props.activeList;
     const user = props.user;
     const X_player = usersList[0];
     const O_player = usersList[1];
     
+    // function winnerFound(winner){
+    //     socket.emit('winnerFound', {winner: winner, X_player:X_player, O_player});    
+    // }
     function handleClick(i){
         const boardCopy = [...board];
     	// If user click an occupied square or if game is won, return
@@ -41,6 +45,7 @@ export function Board(props) {
     }
     
     function resartBoard(){
+        socket.emit('winnerFound', {winner: winner, X_player:X_player, O_player});    
         var board = Array(9).fill(null);
         console.log('boardCopy');
         console.log(board);
@@ -81,7 +86,7 @@ export function Board(props) {
         });
       }, []);
 
-    
+    // winnerFound(winner);
     return(
         <>
             <div style={styles}>

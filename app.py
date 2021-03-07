@@ -72,7 +72,7 @@ def handle_send_message_event(data):
 def handle_join_room_event(data):
     #adding new joined user to the db
     all_people = models.Person.query.all()
-    print('============================================================')
+   
     users = {}
     for person in all_people:
         users[person.username] = person.score
@@ -120,6 +120,35 @@ def on_board(data): # data is whatever arg you pass in your emit call on client
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     socketio.emit('board', data, broadcast=True, include_self=True)
+    
+@socketio.on('winnerFound')
+def on_win(data): # data is whatever arg you pass in your emit call on client
+    print('============================================================')
+    print(data)
+    if data['winner'] == None:
+        print(' ')
+    elif data['winner'] == 'X':
+        winner = db.session.query(models.Person).filter_by(username=data['X_player']).first()
+        loser = db.session.query(models.Person).filter_by(username=data['O_player']).first()
+        winner.score +=  1
+        loser.score -=  1
+        db.session.commit()
+    elif data['winner'] == 'O':
+        winner = db.session.query(models.Person).filter_by(username=data['O_player']).first()
+        loser = db.session.query(models.Person).filter_by(username=data['X_player']).first()
+        winner.score +=  1
+        loser.score -=  1
+        db.session.commit()
+    all_people = models.Person.query.all()
+    users = {}
+    for person in all_people:
+        users[person.username] = person.score
+    print(users)
+    # To sort dictionary in desending order
+    users1 = dict(sorted(users.items(), key=operator.itemgetter(1),reverse=True))
+    print('sorted dict: ' + str(users1))
+    socketio.emit('user_list', users1, broadcast=True, include_self=True)
+    
 
 # Note we need to add this line so we can import app in the python shell
 if __name__ == "__main__":
