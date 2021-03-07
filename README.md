@@ -56,13 +56,13 @@ SELECT email FROM person WHERE username='admin';
 2. Add nodejs buildpack: `heroku buildpacks:add --index 1 heroku/nodejs`
 3. Push to Heroku: `git push heroku main`
 
-## 
-1. Controling user clicks on board: If I had more time and resources I would do more reasearch on how to allow first 2 users to control board 'X' or 'O' respectively and others as 'Spectator'.
-2. Implementation of Database: On window close I cannot track which user have exited because I am not using a database. If I had database I would add a database which can track user info and can be updated live when user joins and exit.
+## known problems 
+1. Window close on heroku app. It works on aws completely fine but it does not record a window close on Heroku app.
+2. Making restart button appear and disappear when game is draw/win/lose. I was able to make button appear and dis appear on win/lose but was unable to make it appear when game was a draw.
 
 ## Technical Problems
-1. Making LeadBoard 
-2. Making Restart button to emit empty Board to all users: I was trying to use setBoard function to make board empty by passing "Array(9).fill(null)" into the function. I was getting error for passing empty array in the setBoard function. After trying lots of diffrent techniques to make board restart I discoverd I just have to emit empty array dirrectly instead of calling setBoard.
-3. I accidentally deleted 2 files while I wanted to remove untracked file from git status. I used "git cleane -f -X" which I found from google to delete untracked files but Google does not always help. This command deleted ".env.development.local" and "sql.env", second file was not important to me beacuse I have not used a database in my code. But first file was an important file which caused my webpage to give an "Invalid host header."message on webpage instead of showing my actual page.
+1. Making LeadBoard update: When a user wins or losses updating their score for particular username was difficult.
+2. Using state for a dictionary: Using 2. Using state for a dictionary was challenging I spent one day to figure it out. It was similar to a list but it was tough. 
+3. I accidentally used heroku push command on git push`'git push origin milestone_2:main'` so this command made all branch to merge in main without me knowing so after another commit I got aware that this has happened.
 
 
