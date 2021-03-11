@@ -39,11 +39,4 @@ export function LeadBoard(props) {
     );
 }
 
-//  <div>
-//             {
-//               Object.keys(usersList).map((key, index) => ( 
-//                 <p key={index}> this is my key {key} and this is my value {usersList[key]}</p> 
-//               ))
-//             }
-//           </div>
-
+export default LeadBoard;

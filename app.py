@@ -36,15 +36,19 @@ activeUsers = {}
 def index(filename):
     return send_from_directory('./build', filename)
 
-# When a client connects from this Socket connection, this function is run
-@socketio.on('connect')
-def on_connect():
-    print('User connected!')
+def usersDictFunct():
     all_people = models.Person.query.all()
     users = {}
     for person in all_people:
         users[person.username] = person.score
-    print(users)
+    # print(users)
+    return users
+    
+# When a client connects from this Socket connection, this function is run
+@socketio.on('connect')
+def on_connect():
+    print('User connected!')
+    users = usersDictFunct()
     users = dict(sorted(users.items(), key=operator.itemgetter(1),reverse=True))
     print('sorted dict: ' + str(users))
     
@@ -66,24 +70,13 @@ def on_chat(data): # data is whatever arg you pass in your emit call on client
 def handle_send_message_event(data):
     print("{} has sent message: {}".format(data['username'], data['message']))
     socketio.emit('receive_message', data)
+    return data['username'] + " " + data['message']
 # When a client emits the event 'chat' to the server, this function is run
 # 'chat' is a custom event name that we just decided
+
 @socketio.on('join_room')
 def handle_join_room_event(data):
-    #adding new joined user to the db
-    all_people = models.Person.query.all()
-   
-    users = {}
-    for person in all_people:
-        users[person.username] = person.score
-    print(users)
-    if data['username'] not in users:
-        new_user = models.Person(username=data['username'], score=100)
-        db.session.add(new_user)
-        db.session.commit()
-        users[data['username']] = 100
-        # users.append(data['username'])
-        # db.session.close()
+    users = add_user(data)
     # To sort dictionary in desending order
     users1 = dict(sorted(users.items(), key=operator.itemgetter(1),reverse=True))
     print('sorted dict: ' + str(users1))
@@ -100,6 +93,16 @@ def handle_join_room_event(data):
     print(data)
     print('Active User List Python: ', activeUsersList)
     socketio.emit('active_user_list', data, broadcast=True, include_self=True)
+
+def add_user(data):
+    #adding new joined user to the db
+    users = usersDictFunct()
+    if data['username'] not in users:
+        new_user = models.Person(username=data['username'], score=100)
+        db.session.add(new_user)
+        db.session.commit()
+        users[data['username']] = 100
+    return users
 
 @socketio.on('leave_room')
 def handle_leave_room_event(data):
@@ -120,11 +123,8 @@ def on_board(data): # data is whatever arg you pass in your emit call on client
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     socketio.emit('board', data, broadcast=True, include_self=True)
-    
-@socketio.on('winnerFound')
-def on_win(data): # data is whatever arg you pass in your emit call on client
-    print('============================================================')
-    print(data)
+
+def winnerFoundUpdateDB(data):
     if data['winner'] == None:
         print(' ')
     elif data['winner'] == 'X':
@@ -139,11 +139,13 @@ def on_win(data): # data is whatever arg you pass in your emit call on client
         winner.score +=  1
         loser.score -=  1
         db.session.commit()
-    all_people = models.Person.query.all()
-    users = {}
-    for person in all_people:
-        users[person.username] = person.score
-    print(users)
+    
+@socketio.on('winnerFound')
+def on_win(data): # data is whatever arg you pass in your emit call on client
+    print('============================================================')
+    print(data)
+    winnerFoundUpdateDB(data)
+    users = usersDictFunct()
     # To sort dictionary in desending order
     users1 = dict(sorted(users.items(), key=operator.itemgetter(1),reverse=True))
     print('sorted dict: ' + str(users1))
