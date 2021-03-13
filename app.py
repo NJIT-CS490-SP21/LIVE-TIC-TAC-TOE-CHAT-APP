@@ -134,6 +134,7 @@ def winnerFoundUpdateDB(data):
         winner.score +=  1
         loser.score -=  1
         db.session.commit()
+        return [ winner.score, loser.score ]
     elif data['winner'] == 'O':
         winner = db.session.query(models.Person).filter_by(username=data['O_player']).first()
         loser = db.session.query(models.Person).filter_by(username=data['X_player']).first()
@@ -151,7 +152,7 @@ def on_win(data): # data is whatever arg you pass in your emit call on client
     users1 = dict(sorted(users.items(), key=operator.itemgetter(1),reverse=True))
     print('sorted dict: ' + str(users1))
     socketio.emit('user_list', users1, broadcast=True, include_self=True)
-    
+    return users1
 
 # Note we need to add this line so we can import app in the python shell
 if __name__ == "__main__":

@@ -92,6 +92,7 @@ class AddUserTestCase(unittest.TestCase):
         self.initial_activeUserList_mock.remove(username)
     
     def test_success(self):
+        # testing add_user
         for test in self.success_test_params:
             with patch('models.Person.query') as mocked_query:
                 mocked_query.all = self.mocked_person_query_all
