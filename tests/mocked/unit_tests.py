@@ -96,8 +96,8 @@ class AddUserTestCase(unittest.TestCase):
         for test in self.success_test_params:
             with patch('models.Person.query') as mocked_query:
                 mocked_query.all = self.mocked_person_query_all
-                with patch('app.db.session.add', self.mocked_db_session_add):
-                    with patch('app.db.session.commit', self.mocked_db_session_commit):
+                with patch('app.DB.session.add', self.mocked_db_session_add):
+                    with patch('app.DB.session.commit', self.mocked_db_session_commit):
         
                             # print(self.initial_db_mock)
                             actual_result = app.add_user(test)
@@ -111,7 +111,7 @@ class AddUserTestCase(unittest.TestCase):
                             self.assertEqual(actual_result['Jack'], expected_result['Jack'])
                             # print(self.initial_db_mock)
                             
-    @mock.patch("app.socketio")
+    @mock.patch("app.SOCKETIO")
     def test_handle_send_message_event(self, mocked_socket_message):
         for test in self.success_test_handle_send_message_event:
             # print(test[message])
@@ -124,7 +124,7 @@ class AddUserTestCase(unittest.TestCase):
             self.assertEqual(actual_result, expected_result)
             self.assertAlmostEqual(len(actual_result), len(expected_result))
     
-    @mock.patch("app.socketio")
+    @mock.patch("app.SOCKETIO")
     def test_handle_leave_room_event(self, mocked_socket_username):
         for test in self.success_test_handle_leave_room_event:
             with patch('app.activeUsersList') as mocked_list:
