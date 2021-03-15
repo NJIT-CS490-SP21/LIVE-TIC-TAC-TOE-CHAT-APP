@@ -1,7 +1,9 @@
-import "./App.css";
+import PropTypes from 'prop-types';
+import './App.css';
+import React from 'react';
 
 export function LeadBoard(props) {
-  const usersList = props.usersList;
+  const { usersList } = props;
   // const activeLoggedUser = props.user;
   console.log(usersList);
   // useEffect(() => {
@@ -14,7 +16,7 @@ export function LeadBoard(props) {
   //       console.log(usersList);
   //     });
   // }, []);
-  console.log("added to usersList: " + usersList);
+  console.log(`added to usersList: ${usersList}`);
   return (
     <>
       <table>
@@ -32,5 +34,11 @@ export function LeadBoard(props) {
     </>
   );
 }
+LeadBoard.propTypes = {
+  usersList: PropTypes.func,
+};
 
+LeadBoard.defaultProps = {
+  usersList: PropTypes.func,
+};
 export default LeadBoard;

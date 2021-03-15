@@ -3,10 +3,7 @@ module.exports = {
         "browser": true,
         "es2021": true
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
-    ],
+    extends: "airbnb",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -18,5 +15,9 @@ module.exports = {
         "react"
     ],
     "rules": {
+        "react/jsx-filename-extension": [1, { extensions: [".js", ".jsx"] }],
+        "react/no-array-index-key": "off",
+        "no-shadow": ["error", { "builtinGlobals": false, "hoist": "functions", "allow": ["board"] }],
+        "import/no-named-as-default": 0
     }
 };
